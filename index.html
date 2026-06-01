@@ -1,0 +1,402 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green:#2D6A4F;--green-light:#52B788;--green-pale:#D8F3DC;
+    --cream:#FEFAE0;--sand:#E9C46A;--rust:#E76F51;
+    --text:#1B2E1E;--muted:#6B7B6E;--white:#fff;
+    --r:20px;--rs:12px;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text)}
+  .wrapper{display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 2rem;gap:1.5rem}
+  .nav-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .pill{background:var(--white);border:1.5px solid #d0ddd0;border-radius:99px;padding:7px 16px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .2s;font-family:'DM Sans',sans-serif}
+  .pill.active{background:var(--green);color:var(--white);border-color:var(--green)}
+  .pill:hover:not(.active){border-color:var(--green);color:var(--green)}
+  .phone{width:340px;background:#111;border-radius:44px;padding:10px;box-shadow:0 24px 64px rgba(0,0,0,.28)}
+  .screen{border-radius:36px;overflow:hidden;background:var(--cream);height:680px;position:relative;display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:28px;background:#111;border-radius:0 0 18px 18px;z-index:10}
+  .status-bar{display:flex;justify-content:space-between;align-items:center;padding:36px 20px 8px;font-size:11px;font-weight:600;color:var(--text);flex-shrink:0}
+  .scroll-area{flex:1;overflow-y:auto;scrollbar-width:none}
+  .scroll-area::-webkit-scrollbar{display:none}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* ── HOME ── */
+  .home-hero{background:linear-gradient(160deg,#1B4332 0%,#2D6A4F 60%,#52B788 100%);padding:20px 20px 28px;position:relative;overflow:hidden}
+  .home-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='60' cy='60' r='50' fill='none' stroke='rgba(255,255,255,.05)' stroke-width='1'/%3E%3Ccircle cx='60' cy='60' r='35' fill='none' stroke='rgba(255,255,255,.04)' stroke-width='1'/%3E%3C/svg%3E") repeat;opacity:.5}
+  .home-hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;position:relative}
+  .app-logo{font-family:'Playfair Display',serif;font-size:22px;color:#fff;font-weight:700;letter-spacing:-.3px}
+  .app-logo span{color:var(--sand)}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--text)}
+  .hero-greeting{font-size:12px;color:rgba(255,255,255,.65);margin-bottom:4px;position:relative}
+  .hero-title{font-family:'Playfair Display',serif;font-size:26px;color:#fff;line-height:1.2;margin-bottom:18px;position:relative}
+  .hero-title em{color:var(--sand);font-style:normal}
+  .search-bar{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.7);font-size:13px;position:relative}
+  .search-bar i{font-size:16px}
+  .category-row{padding:16px 16px 0;display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
+  .category-row::-webkit-scrollbar{display:none}
+  .cat-chip{flex-shrink:0;background:var(--white);border:1.5px solid #e0e8e1;border-radius:99px;padding:7px 14px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+  .cat-chip.sel{background:var(--green-pale);border-color:var(--green-light);color:var(--green)}
+  .section-header{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 10px;font-size:13px}
+  .section-header h3{font-weight:600;font-size:14px}
+  .section-header a{color:var(--green);font-size:12px}
+  .exp-cards{padding:0 16px;display:flex;flex-direction:column;gap:12px;padding-bottom:80px}
+  .exp-card{background:var(--white);border-radius:var(--r);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);cursor:pointer}
+  .exp-card:active{transform:scale(.98)}
+  .card-img{height:140px;position:relative;overflow:hidden}
+  .card-img-bg{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:48px}
+  .card-img-bg.kayak{background:linear-gradient(135deg,#74c0fc,#1971c2)}
+  .card-img-bg.hike{background:linear-gradient(135deg,#8ce99a,#2f9e44)}
+  .card-img-bg.ski{background:linear-gradient(135deg,#bac8ff,#4c6ef5)}
+  .card-img-bg.art{background:linear-gradient(135deg,#ffd8a8,#e67700)}
+  .card-badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text)}
+  .card-fav{position:absolute;top:10px;right:10px;width:30px;height:30px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .card-body{padding:12px}
+  .card-title{font-weight:600;font-size:14px;margin-bottom:4px}
+  .card-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted)}
+  .card-meta i{font-size:13px}
+  .card-price{font-weight:600;color:var(--green);font-size:14px;margin-top:8px}
+  .card-price span{font-weight:400;color:var(--muted);font-size:12px}
+  .bottom-nav{position:absolute;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid #e8ede9;display:flex;justify-content:space-around;padding:10px 0 14px}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--muted);cursor:pointer;padding:0 12px}
+  .nav-item i{font-size:20px}
+  .nav-item.active{color:var(--green)}
+
+  /* ── DETAIL ── */
+  .detail-hero{height:220px;position:relative;overflow:hidden;flex-shrink:0}
+  .detail-hero-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:72px}
+  .detail-back{position:absolute;top:12px;left:14px;width:34px;height:34px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+  .detail-share{position:absolute;top:12px;right:14px;width:34px;height:34px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+  .detail-body{padding:18px;flex:1;overflow-y:auto;scrollbar-width:none;padding-bottom:90px}
+  .detail-body::-webkit-scrollbar{display:none}
+  .detail-category{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+  .detail-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.2;margin-bottom:10px}
+  .detail-rating{display:flex;align-items:center;gap:6px;margin-bottom:14px;font-size:13px}
+  .stars{color:var(--sand);font-size:14px}
+  .detail-info-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .info-chip{background:var(--green-pale);border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:12px}
+  .info-chip i{color:var(--green);font-size:16px;flex-shrink:0}
+  .info-chip-label{color:var(--muted);font-size:10px}
+  .info-chip-val{font-weight:600;font-size:13px;color:var(--text)}
+  .detail-desc{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:16px}
+  .transport-section{background:var(--white);border-radius:var(--r);padding:14px;margin-bottom:16px;border:1px solid #e8ede9}
+  .transport-title{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .transport-title i{color:var(--green);font-size:16px}
+  .transport-options{display:flex;gap:8px}
+  .t-opt{flex:1;border:1.5px solid #e0e8e1;border-radius:var(--rs);padding:8px;text-align:center;cursor:pointer;font-size:11px;color:var(--muted)}
+  .t-opt.sel{border-color:var(--green);background:var(--green-pale);color:var(--green);font-weight:600}
+  .t-opt i{display:block;font-size:18px;margin-bottom:3px}
+  .detail-cta{position:absolute;bottom:0;left:0;right:0;background:var(--white);padding:14px 18px;border-top:1px solid #e8ede9;display:flex;align-items:center;justify-content:space-between}
+  .cta-price{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--green)}
+  .cta-price small{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--muted)}
+  .book-btn{background:var(--green);color:var(--white);border:none;border-radius:14px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .book-btn:active{transform:scale(.97)}
+
+  /* ── BOOKING ── */
+  .book-header{padding:48px 18px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .book-header h2{font-family:'Playfair Display',serif;font-size:20px}
+  .back-btn{width:34px;height:34px;border-radius:50%;background:var(--white);border:1px solid #e0e8e1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+  .book-body{padding:0 18px;flex:1;overflow-y:auto;scrollbar-width:none;padding-bottom:90px}
+  .book-body::-webkit-scrollbar{display:none}
+  .book-summary{background:var(--white);border-radius:var(--r);padding:14px;display:flex;gap:12px;align-items:center;margin-bottom:18px;border:1px solid #e8ede9}
+  .book-thumb{width:60px;height:60px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+  .book-thumb.kayak{background:linear-gradient(135deg,#74c0fc,#1971c2)}
+  .book-name{font-weight:600;font-size:14px;margin-bottom:3px}
+  .book-loc{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+  .form-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+  .form-group{margin-bottom:16px}
+  .date-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px}
+  .date-cell{background:var(--white);border:1.5px solid #e0e8e1;border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;font-size:11px}
+  .date-cell.sel{background:var(--green);border-color:var(--green);color:var(--white)}
+  .date-cell .dd{font-weight:600;font-size:14px}
+  .time-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .time-cell{background:var(--white);border:1.5px solid #e0e8e1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:500}
+  .time-cell.sel{background:var(--green-pale);border-color:var(--green);color:var(--green);font-weight:600}
+  .people-row{display:flex;align-items:center;gap:12px;background:var(--white);border-radius:var(--rs);padding:12px 14px;border:1px solid #e0e8e1}
+  .people-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid #d0ddd0;background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--green);font-weight:600}
+  .people-count{font-size:18px;font-weight:600;flex:1;text-align:center}
+  .transport-row{display:flex;gap:8px}
+  .trans-card{flex:1;background:var(--white);border:1.5px solid #e0e8e1;border-radius:var(--rs);padding:10px 8px;text-align:center;cursor:pointer;font-size:11px;color:var(--muted)}
+  .trans-card i{display:block;font-size:22px;margin-bottom:4px;color:var(--muted)}
+  .trans-card.sel{border-color:var(--green);background:var(--green-pale);color:var(--green);font-weight:600}
+  .trans-card.sel i{color:var(--green)}
+  .price-breakdown{background:var(--white);border-radius:var(--r);padding:14px;border:1px solid #e8ede9;margin-top:6px}
+  .price-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f4f0}
+  .price-row:last-child{border:none;font-weight:600;font-size:14px;color:var(--green)}
+  .disclaimer{font-size:11px;color:var(--muted);line-height:1.5;background:#fffef5;border:1px solid #f0e88a;border-radius:var(--rs);padding:10px;margin-top:12px}
+  .confirm-btn{position:absolute;bottom:0;left:0;right:0;background:var(--green);color:var(--white);border:none;padding:16px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:0}
+  .confirm-btn:active{background:#245c3f}
+
+  /* ── CONFIRM ── */
+  .confirm-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;height:100%;background:var(--cream);text-align:center}
+  .confirm-icon{width:80px;height:80px;background:var(--green-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px}
+  .confirm-title{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:8px}
+  .confirm-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+  .confirm-card{background:var(--white);border-radius:var(--r);width:100%;padding:16px;border:1px solid #e8ede9;margin-bottom:20px;text-align:left}
+  .conf-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #f0f4f0}
+  .conf-row:last-child{border:none;font-weight:600;color:var(--green)}
+  .conf-label{color:var(--muted)}
+  .home-again-btn{background:var(--green);color:var(--white);border:none;border-radius:14px;padding:14px 32px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%}
+
+  /* fade-in */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .page.active{animation:fadeUp .25s ease}
+</style>
+
+<h2 class="sr-only">GetOut mobile app prototype — navigate through Home, Experience Detail, Booking, and Confirmation screens</h2>
+
+<div class="wrapper">
+  <div class="nav-pills">
+    <button class="pill active" onclick="showPage('home')">Home</button>
+    <button class="pill" onclick="showPage('detail')">Experience Detail</button>
+    <button class="pill" onclick="showPage('booking')">Booking</button>
+    <button class="pill" onclick="showPage('confirm')">Confirmation</button>
+  </div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="notch"></div>
+
+      <!-- ══ HOME ══ -->
+      <div class="page active" id="home">
+        <div class="status-bar"><span>9:41</span><span>●●● ▲ ⬛</span></div>
+        <div class="scroll-area">
+          <div class="home-hero">
+            <div class="home-hero-top">
+              <div class="app-logo">Get<span>Out</span></div>
+              <div class="avatar">BA</div>
+            </div>
+            <p class="hero-greeting">Good morning, Brandon 👋</p>
+            <h1 class="hero-title">Find your<br><em>escape,</em> today.</h1>
+            <div class="search-bar"><i class="ti ti-search"></i>Search experiences near NYC…</div>
+          </div>
+          <div class="category-row">
+            <div class="cat-chip sel"><i class="ti ti-compass"></i>All</div>
+            <div class="cat-chip"><i class="ti ti-kayak"></i>Outdoor</div>
+            <div class="cat-chip"><i class="ti ti-building-museum"></i>Cultural</div>
+            <div class="cat-chip"><i class="ti ti-mountain"></i>Hiking</div>
+            <div class="cat-chip"><i class="ti ti-snowflake"></i>Ski</div>
+          </div>
+          <div class="section-header"><h3>Featured Experiences</h3><a>See all</a></div>
+          <div class="exp-cards">
+            <div class="exp-card" onclick="showPage('detail')">
+              <div class="card-img"><div class="card-img-bg kayak" style="display:flex;align-items:center;justify-content:center;font-size:56px">🛶</div><div class="card-badge">⭐ 4.9</div><div class="card-fav">🤍</div></div>
+              <div class="card-body">
+                <div class="card-title">Kayaking in Hudson Valley</div>
+                <div class="card-meta"><span><i class="ti ti-map-pin"></i> Hudson, NY</span><span><i class="ti ti-clock"></i> 2 hrs</span><span><i class="ti ti-bus"></i> 1 hr away</span></div>
+                <div class="card-price">$40 <span>/ person</span></div>
+              </div>
+            </div>
+            <div class="exp-card">
+              <div class="card-img"><div class="card-img-bg hike" style="display:flex;align-items:center;justify-content:center;font-size:56px">🥾</div><div class="card-badge">⭐ 4.7</div><div class="card-fav">❤️</div></div>
+              <div class="card-body">
+                <div class="card-title">Hiking in Wawarsing</div>
+                <div class="card-meta"><span><i class="ti ti-map-pin"></i> Wawarsing, NY</span><span><i class="ti ti-clock"></i> 3 hrs</span><span><i class="ti ti-bus"></i> 1.5 hrs</span></div>
+                <div class="card-price">Free <span>entry</span></div>
+              </div>
+            </div>
+            <div class="exp-card">
+              <div class="card-img"><div class="card-img-bg art" style="display:flex;align-items:center;justify-content:center;font-size:56px">🎨</div><div class="card-badge">⭐ 4.8</div><div class="card-fav">🤍</div></div>
+              <div class="card-body">
+                <div class="card-title">Van Gogh Exhibit</div>
+                <div class="card-meta"><span><i class="ti ti-map-pin"></i> Ossining, NY</span><span><i class="ti ti-clock"></i> 1.5 hrs</span><span><i class="ti ti-train"></i> 45 min</span></div>
+                <div class="card-price">$30 <span>/ person</span></div>
+              </div>
+            </div>
+            <div class="exp-card">
+              <div class="card-img"><div class="card-img-bg ski" style="display:flex;align-items:center;justify-content:center;font-size:56px">⛷️</div><div class="card-badge">⭐ 4.6</div><div class="card-fav">🤍</div></div>
+              <div class="card-body">
+                <div class="card-title">Windham Mountain Skiing</div>
+                <div class="card-meta"><span><i class="ti ti-map-pin"></i> Windham, NY</span><span><i class="ti ti-clock"></i> Full day</span><span><i class="ti ti-bus"></i> 2 hrs</span></div>
+                <div class="card-price">$95 <span>/ person</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <div class="nav-item active"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item"><i class="ti ti-compass"></i>Explore</div>
+          <div class="nav-item"><i class="ti ti-calendar"></i>Trips</div>
+          <div class="nav-item"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+
+      <!-- ══ DETAIL ══ -->
+      <div class="page" id="detail">
+        <div class="detail-hero">
+          <div class="detail-hero-bg kayak" style="display:flex;align-items:center;justify-content:center;font-size:90px;background:linear-gradient(135deg,#74c0fc,#1971c2)">🛶</div>
+          <div class="detail-back" onclick="showPage('home')"><i class="ti ti-arrow-left"></i></div>
+          <div class="detail-share"><i class="ti ti-share"></i></div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-category">Outdoor · Hudson Valley</div>
+          <div class="detail-title">Kayaking in Hudson Valley</div>
+          <div class="detail-rating">
+            <span class="stars">★★★★★</span>
+            <span style="font-weight:600;font-size:13px">4.9</span>
+            <span style="color:var(--muted);font-size:12px">(128 reviews)</span>
+          </div>
+          <div class="detail-info-row">
+            <div class="info-chip"><i class="ti ti-clock"></i><div><div class="info-chip-label">Tour time</div><div class="info-chip-val">2 hours</div></div></div>
+            <div class="info-chip"><i class="ti ti-bus"></i><div><div class="info-chip-label">Travel time</div><div class="info-chip-val">1 hour</div></div></div>
+            <div class="info-chip"><i class="ti ti-users"></i><div><div class="info-chip-label">Group size</div><div class="info-chip-val">Up to 12</div></div></div>
+            <div class="info-chip"><i class="ti ti-map-pin"></i><div><div class="info-chip-label">Departs from</div><div class="info-chip-val">Penn Station</div></div></div>
+          </div>
+          <p class="detail-desc">A beautiful kayak tour of the Hudson Valley lake and mountains. Perfect for students looking to escape the city grind. All equipment provided — no experience needed. Lake access, mountain views, and an unforgettable afternoon await.</p>
+          <div class="transport-section">
+            <div class="transport-title"><i class="ti ti-route"></i>Transportation Options</div>
+            <div class="transport-options">
+              <div class="t-opt sel" id="to-bus"><i class="ti ti-bus"></i>Bus<br><span style="font-weight:600;color:var(--green)">$20</span></div>
+              <div class="t-opt" id="to-train" onclick="selectTransport('train')"><i class="ti ti-train"></i>Train<br><span>$25</span></div>
+              <div class="t-opt" id="to-car" onclick="selectTransport('car')"><i class="ti ti-car"></i>ZipCar<br><span>$35</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-cta">
+          <div><div class="cta-price">$40 <small>/ person</small></div><div style="font-size:11px;color:var(--muted)">+ $20 transport</div></div>
+          <button class="book-btn" onclick="showPage('booking')">Book Now →</button>
+        </div>
+      </div>
+
+      <!-- ══ BOOKING ══ -->
+      <div class="page" id="booking">
+        <div class="status-bar" style="padding-top:36px"><span>9:41</span><span>●●● ▲ ⬛</span></div>
+        <div class="book-header">
+          <div class="back-btn" onclick="showPage('detail')"><i class="ti ti-arrow-left"></i></div>
+          <h2>Book Experience</h2>
+        </div>
+        <div class="book-body">
+          <div class="book-summary">
+            <div class="book-thumb kayak">🛶</div>
+            <div><div class="book-name">Kayaking in Hudson Valley</div><div class="book-loc"><i class="ti ti-map-pin" style="font-size:12px"></i>Hudson, NY</div></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Select Date</div>
+            <div class="date-grid">
+              <div class="date-cell"><div style="color:var(--muted);font-size:9px">SAT</div><div class="dd">14</div></div>
+              <div class="date-cell sel"><div style="font-size:9px">SUN</div><div class="dd">15</div></div>
+              <div class="date-cell"><div style="color:var(--muted);font-size:9px">MON</div><div class="dd">16</div></div>
+              <div class="date-cell"><div style="color:var(--muted);font-size:9px">TUE</div><div class="dd">17</div></div>
+              <div class="date-cell"><div style="color:var(--muted);font-size:9px">WED</div><div class="dd">18</div></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Departure Time</div>
+            <div class="time-grid">
+              <div class="time-cell sel">9:00 AM</div>
+              <div class="time-cell">11:00 AM</div>
+              <div class="time-cell">1:00 PM</div>
+              <div class="time-cell">3:00 PM</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Number of People</div>
+            <div class="people-row">
+              <div class="people-btn" onclick="changePeople(-1)">−</div>
+              <div class="people-count" id="ppl-count">2</div>
+              <div class="people-btn" onclick="changePeople(1)">+</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Transportation</div>
+            <div class="transport-row">
+              <div class="trans-card sel" id="tc-bus"><i class="ti ti-bus"></i>Bus — $20</div>
+              <div class="trans-card" id="tc-train" onclick="selectBookTransport('train')"><i class="ti ti-train"></i>Train — $25</div>
+              <div class="trans-card" id="tc-car" onclick="selectBookTransport('car')"><i class="ti ti-car"></i>ZipCar — $35</div>
+            </div>
+          </div>
+          <div class="price-breakdown">
+            <div class="price-row"><span>Experience (× <span id="pb-ppl">2</span>)</span><span id="pb-exp">$80</span></div>
+            <div class="price-row"><span>Transport (× <span id="pb-ppl2">2</span>)</span><span id="pb-trans">$40</span></div>
+            <div class="price-row"><span>GetOut fee</span><span>$4</span></div>
+            <div class="price-row"><span>Total</span><span id="pb-total">$124</span></div>
+          </div>
+          <div class="disclaimer">
+            <i class="ti ti-info-circle" style="font-size:13px;vertical-align:-2px"></i>
+            Refunds available if cancelled at least 24 hours before travel. GetOut is not responsible for missed travel opportunities due to tardiness.
+          </div>
+        </div>
+        <button class="confirm-btn" onclick="showPage('confirm')">Confirm & Pay $124 →</button>
+      </div>
+
+      <!-- ══ CONFIRM ══ -->
+      <div class="page" id="confirm">
+        <div class="confirm-screen">
+          <div class="confirm-icon">✅</div>
+          <div class="confirm-title">You're all set!</div>
+          <p class="confirm-sub">Your escape to Hudson Valley is booked. Time to get out of the city, Brandon.</p>
+          <div class="confirm-card">
+            <div class="conf-row"><span class="conf-label">Experience</span><span>Kayaking — Hudson Valley</span></div>
+            <div class="conf-row"><span class="conf-label">Date</span><span>Sunday, Jun 15</span></div>
+            <div class="conf-row"><span class="conf-label">Departs</span><span>9:00 AM · Penn Station</span></div>
+            <div class="conf-row"><span class="conf-label">Transport</span><span>Bus (round trip)</span></div>
+            <div class="conf-row"><span class="conf-label">Guests</span><span>2 people</span></div>
+            <div class="conf-row"><span class="conf-label">Total paid</span><span>$124</span></div>
+          </div>
+          <button class="home-again-btn" onclick="showPage('home')">Back to Explore</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let people = 2, transport = 'bus', transCost = 20;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  const map = {home:0,detail:1,booking:2,confirm:3};
+  document.querySelectorAll('.pill')[map[id]].classList.add('active');
+}
+
+function selectTransport(t) {
+  ['bus','train','car'].forEach(x => {
+    document.getElementById('to-'+x).classList.toggle('sel', x===t);
+  });
+}
+
+function selectBookTransport(t) {
+  transport = t;
+  transCost = t==='bus'?20:t==='train'?25:35;
+  ['bus','train','car'].forEach(x => {
+    document.getElementById('tc-'+x).classList.toggle('sel', x===t);
+  });
+  updatePrice();
+}
+
+function changePeople(d) {
+  people = Math.max(1, Math.min(8, people + d));
+  document.getElementById('ppl-count').textContent = people;
+  updatePrice();
+}
+
+function updatePrice() {
+  const exp = people * 40;
+  const trans = people * transCost;
+  const total = exp + trans + 4;
+  document.getElementById('pb-ppl').textContent = people;
+  document.getElementById('pb-ppl2').textContent = people;
+  document.getElementById('pb-exp').textContent = '$'+exp;
+  document.getElementById('pb-trans').textContent = '$'+trans;
+  document.getElementById('pb-total').textContent = '$'+total;
+  document.querySelector('.confirm-btn').textContent = 'Confirm & Pay $'+total+' →';
+}
+
+document.querySelectorAll('.date-cell').forEach(c => {
+  c.addEventListener('click', function() {
+    document.querySelectorAll('.date-cell').forEach(x => x.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+document.querySelectorAll('.time-cell').forEach(c => {
+  c.addEventListener('click', function() {
+    document.querySelectorAll('.time-cell').forEach(x => x.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+</script>
